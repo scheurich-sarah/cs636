@@ -68,22 +68,22 @@ def test_csr():
     # length is 1001
     # lists the place in memory where the node at that index begins
     # storing it's neighbors
-    print('offset_csr list len = ', len(offset_csr.tolist()));
-    print(', values = \n', offset_csr.tolist());
+    #print('offset_csr list len = ', len(offset_csr.tolist()));
+    #print(', values = \n', offset_csr.tolist());
     # shows neighbors of each node recorded in small world
     # e.g node 0 has neighboras 1, 2, 3, 4, 996, 997, 998, 999
     # e.g node 1 has neighboras 0, 2, 3, 4, 5, 996, 997, 998
     # lists all edges from perspective of both nodes, so length is
     # double the number of edges in the graph
-    print('nebrs_csr list len = ', len(nebrs_csr.tolist()));
-    print(', values =\n', nebrs_csr.tolist());
+    #print('nebrs_csr list len = ', len(nebrs_csr.tolist()));
+    #print(', values =\n', nebrs_csr.tolist());
     # to get the degree of each node, just need offset list
     offset_list = [val[0] for val in offset_csr.tolist()]
     offset_list_shift = offset_list.copy()
     offset_list_shift.pop(0) # remove 0 offset, first value
     offset_list.pop()
     node_degrees = [(v2 - v1) for v1, v2 in zip(offset_list, offset_list_shift)]
-    print('node degrees = ', node_degrees)
+    #print('node degrees = ', node_degrees)
     return pgraph
 
 
