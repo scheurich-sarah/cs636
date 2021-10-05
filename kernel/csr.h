@@ -13,6 +13,9 @@ class csr_t {
  public:
     vid_t  v_count;
     vid_t  e_count;
+    
+    // need to know size of each eleme in neighborhood,
+    // simply 4 bytes b/c not a weighted graph
     vid_t  dst_size;
     vid_t* offset;
     vid_t* nebrs;
@@ -40,6 +43,14 @@ class csr_t {
     vid_t get_degree(vid_t index) {
         return offset[index + 1] - offset[index];
     }
+    /*
+    vid_t get_offset() {
+        return offset;
+    }
+    vid_t get_nebrs() {
+        return nebrs;
+    }
+    */
 };
 
 class edge_t {
@@ -63,11 +74,14 @@ class coo_t {
      void init(vid_t a_vcount, vid_t a_dstsize, vid_t a_ecount, edge_t* a_edges) {
          v_count = a_vcount;
          e_count = a_ecount;
-         dst_size = a_dstsize;
+	 dst_size = a_dstsize;
          edges = a_edges;
      }
 };
 
+// a graph has csr, csc, and coo
+// users can get the two offset and neighbor arrays from csr or csc
+// and assign them
 class graph_t {
  public:
     csr_t csr;
@@ -82,6 +96,12 @@ class graph_t {
     }
     vid_t get_edge_count() {
         return csr.e_count;
+    }
+    vid_t get_offset() {
+        return *csr.offset;
+    }
+    vid_t get_nebrs() {
+        return *csr.nebrs;
     }
 };
 
