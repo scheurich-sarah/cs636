@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/scsche/cs636_Big_Data/cs636/kernel/bfs.cpp
+cassert
+-
+iostream
+-
+csr.h
+/home/scsche/cs636_Big_Data/cs636/kernel/csr.h
+
+/home/scsche/cs636_Big_Data/cs636/kernel/csr.h
+stdint.h
+/home/scsche/cs636_Big_Data/cs636/kernel/stdint.h
+
