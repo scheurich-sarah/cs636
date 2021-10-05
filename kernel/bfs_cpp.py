@@ -1,8 +1,8 @@
 import queue
 import numpy as np
 import collections
-import pygraph as pg
 import kernel
+import pygraph as pg
 import datetime
 
 def memoryview_to_np(memview, nebr_dt):
@@ -57,8 +57,8 @@ def test_csr():
 
     flag = 0;
     G = kernel.init_graph(offset_csr, nebrs_csr, offset_csc, nebrs_csc, flag, v_count);
-
-    print(G.get_vcount())
+    # should be able to run this, will print 0
+    print('G.get_vcount in bfs_cpp.py', G.get_vcount())
 
     root = 0;
     G.run_bfs(0);
