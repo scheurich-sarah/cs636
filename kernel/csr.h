@@ -43,14 +43,14 @@ class csr_t {
     vid_t get_degree(vid_t index) {
         return offset[index + 1] - offset[index];
     }
-    /*
+    
     vid_t get_offset() {
-        return offset;
+        return *offset;
     }
     vid_t get_nebrs() {
-        return nebrs;
+        return *nebrs;
     }
-    */
+    
 };
 
 class edge_t {
@@ -89,6 +89,7 @@ class graph_t {
     coo_t coo;
  public:
     void init(vid_t a_vcount, vid_t a_dstsize, void* a_offset, void* a_nebrs, void* a_offset1, void* a_nebrs1, int64_t flag, int64_t num_vcount) {
+    	csr.init(a_vcount, a_dstsize, a_offset, a_nebrs, flag, num_vcount);
     }
 
     vid_t get_vcount() {
@@ -97,11 +98,12 @@ class graph_t {
     vid_t get_edge_count() {
         return csr.e_count;
     }
+    /*
     vid_t get_offset() {
         return *csr.offset;
     }
     vid_t get_nebrs() {
         return *csr.nebrs;
-    }
+    }*/
 };
 
