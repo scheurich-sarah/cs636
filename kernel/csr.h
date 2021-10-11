@@ -14,9 +14,10 @@ class csr_t {
     vid_t  v_count;
     vid_t  e_count;
     
-    // need to know size of each eleme in neighborhood,
+    // need to know size of each element in neighborhood,
     // simply 4 bytes b/c not a weighted graph
     vid_t  dst_size;
+    // pointers
     vid_t* offset;
     vid_t* nebrs;
     int64_t flag;
@@ -41,14 +42,21 @@ class csr_t {
         return e_count;
     }
     vid_t get_degree(vid_t index) {
-        return offset[index + 1] - offset[index];
+        return offset[(int) index + 1] - offset[(int) index];
     }
-    
-    vid_t get_offset() {
-        return *offset;
+   // both functions are options
+   // not sure which is better style, keeping both
+    vid_t* get_offset_ptr() {
+	return offset;
+
     }
-    vid_t get_nebrs() {
-        return *nebrs;
+    vid_t get_offset(int vertex) {
+	return offset[vertex];
+
+    }
+
+    vid_t* get_nebrs_ptr() {
+        return nebrs;
     }
     
 };
@@ -98,12 +106,12 @@ class graph_t {
     vid_t get_edge_count() {
         return csr.e_count;
     }
-    /*
-    vid_t get_offset() {
-        return *csr.offset;
+   /* 
+    vid_t* get_offset() {
+        return csr.offset;
     }
-    vid_t get_nebrs() {
-        return *csr.nebrs;
+    vid_t* get_nebrs() {
+        return csr.nebrs;
     }*/
 };
 

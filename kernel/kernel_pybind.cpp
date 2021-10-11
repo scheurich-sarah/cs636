@@ -40,7 +40,7 @@ PYBIND11_MODULE(kernel, m) {
 
            // * is just a dereference operator
       	   graph_t* graph =  new graph_t;
-           cout<< offset_csr.shape(0) - 1<< "num_vcount"<< endl;
+           //cout<< offset_csr.shape(0) - 1<< " num_vcount in kernel_pybind"<< endl;
            graph->init(offset_csr.shape(0) - 1, nebrs_csr.itemsize(), 
                  offset_csr.request().ptr, nebrs_csr.request().ptr,
                  offset_csc.request().ptr, nebrs_csc.request().ptr, flag, num_vcount);

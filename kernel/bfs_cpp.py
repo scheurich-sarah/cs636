@@ -58,10 +58,10 @@ def test_csr():
     flag = 0;
     G = kernel.init_graph(offset_csr, nebrs_csr, offset_csc, nebrs_csc, flag, v_count);
     # should be able to run this, will print 0
-    print('G.get_vcount in bfs_cpp.py', G.get_vcount())
+    #print('G.get_vcount in bfs_cpp.py', G.get_vcount())
 
     root = 0;
-    G.run_bfs(0);
+    G.run_bfs(1);
 
 def test_lanl_graph_python():
     
