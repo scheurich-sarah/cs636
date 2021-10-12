@@ -62,6 +62,7 @@ def test_csr():
 
     root = 0;
     G.run_bfs(1);
+    G.run_bfs_mt(1);
 
 def test_lanl_graph_python():
     

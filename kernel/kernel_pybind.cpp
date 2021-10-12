@@ -12,8 +12,9 @@ using std::endl;
 //#include "capsule_to_array.h"
 //#include "generated_pybind.h"
 
-// need to implement this
+// implemented this
 void run_bfs(graph_t& graph, vid_t root);
+void run_bfs_mt(graph_t& graph, vid_t root);
 
 // names the output module m
 PYBIND11_MODULE(kernel, m) {
@@ -31,6 +32,11 @@ PYBIND11_MODULE(kernel, m) {
     .def("run_bfs",
         [](graph_t& graph, vid_t root) {
             run_bfs(graph, root);
+        }
+    )
+    .def("run_bfs_mt",
+        [](graph_t& graph, vid_t root) {
+            run_bfs_mt(graph, root);
         }
     );
     

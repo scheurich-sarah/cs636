@@ -115,3 +115,9 @@ void run_bfs(graph_t& g, vid_t root)
 	cout<< "level "<< i << ": "<< level_array[i]<< " vertices"<< endl;
     }
 }
+
+// parallelized implementation
+void run_bfs_mt(graph_t& g, vid_t root)
+{
+    cout<<"running parallelized bfs"<<endl;
+}
