@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include "csr.h"
+#include "omp.h"
 #include <queue>
 
 using std::cout;
@@ -117,7 +118,87 @@ void run_bfs(graph_t& g, vid_t root)
 }
 
 // parallelized implementation
+// going to try with status array
 void run_bfs_mt(graph_t& g, vid_t root)
 {
     cout<<"running parallelized bfs"<<endl;
+    // pointers of type csr_t
+    csr_t* csr = &g.csr;
+    csr_t* csc = &g.csc;
+
+    // get the offset and nebrs
+    vid_t* offset = csr->get_offset_ptr();
+    vid_t* nebrs = csr->get_nebrs_ptr();
+    
+    // create status array
+    // level = visited
+    // current level = frontier
+    // 255 = unvisited
+    // start all levels at infinity
+    int array_size = (int) csr->get_vcount();
+    //cout << "array size = "<< array_size<< endl;
+    vid_t status_array [array_size]; 
+    // init all values in array to 255
+    for (int i=0; i<array_size; i++) {status_array[i] = 255;}
+
+    // mark the start node level label as 0
+    status_array[root] = 0;
+
+    // create a thread for each vertex
+    omp_set_num_threads((int) array_size);
+
+    // track the current level
+    vid_t current_level = 0;
+	    
+    bool done = false;
+    while(done == false){
+	    #pragma omp parallel for
+	    for (int i = 0; i < array_size; i++){
+		if (status_array[i] == current_level){
+		    // node is in frontier, set level then find neighbors
+		    // get starting location of node's neighbors from offset
+		    vid_t start_idx = offset[i];
+		    vid_t end_idx = offset[i + 1];
+		
+		    // loop through neighbors
+		    for (int j= start_idx; j < end_idx; j++) {
+			vid_t neb = nebrs[j];
+			if (status_array[neb] > current_level + 1) {
+			    status_array[neb] = current_level + 1;
+			}
+		    }
+		}
+	    }
+	    done = true;
+	    for (int i = 0; i< array_size; i++) {
+		    if (status_array[i] == 255){
+			    done = false;
+			    break;
+		    }
+	    }
+	    current_level ++;
+    }
+    // loop through and print status array
+    //cout << "printing label array " << endl;
+    int max_level = 0;
+    for(int i = 0; i < array_size; i++){
+	//cout <<"index = "<<i<<" value = "<< label_array[i]<< endl;
+	if (status_array[i] > max_level){ max_level = status_array[i];}
+    }
+
+    cout << "root = " << root << endl; 
+    //print bfs tree here
+    //i.e. how many vertex in each level
+
+    // create array to track levels
+    int level_array[max_level+1] = {0};
+    for(int i = 0; i < array_size; i++){
+	level_array[status_array[i]]++;
+    }
+
+    //print the array 
+    for(int i = 0; i <= max_level; i++){
+	cout<< "level "<< i << ": "<< level_array[i]<< " vertices"<< endl;
+    }
+
 }
