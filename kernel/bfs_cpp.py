@@ -4,6 +4,7 @@ import collections
 import kernel
 import pygraph as pg
 import datetime
+import timeit
 
 def memoryview_to_np(memview, nebr_dt):
     arr = np.array(memview, copy=False)

@@ -34,6 +34,7 @@ PYBIND11_MODULE(kernel, m) {
             run_bfs(graph, root);
         }
     )
+    // this creates a python binding
     .def("run_bfs_mt",
         [](graph_t& graph, vid_t root) {
             run_bfs_mt(graph, root);

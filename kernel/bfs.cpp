@@ -1,4 +1,5 @@
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include "csr.h"
 #include "omp.h"
@@ -6,11 +7,13 @@
 
 using std::cout;
 using std::endl;
+using namespace std::chrono;
 
 // this needs kernel.cpython
 
 void run_bfs(graph_t& g, vid_t root)
 {
+    auto start = high_resolution_clock::now();
     // 	& in params means youre passing it a reference
     // 	to a param, which uses original object instead
     // 	of a copy, so you can change original object value
@@ -115,6 +118,9 @@ void run_bfs(graph_t& g, vid_t root)
     for(int i = 0; i <= max_level; i++){
 	cout<< "level "<< i << ": "<< level_array[i]<< " vertices"<< endl;
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop-start);
+    cout << "single thread frontier queue based BFS takes " << duration.count() << endl;
 }
 
 // parallelized implementation
@@ -122,6 +128,7 @@ void run_bfs(graph_t& g, vid_t root)
 void run_bfs_mt(graph_t& g, vid_t root)
 {
     cout<<"running parallelized bfs"<<endl;
+    auto start1 = high_resolution_clock::now();
     // pointers of type csr_t
     csr_t* csr = &g.csr;
     csr_t* csc = &g.csc;
@@ -145,14 +152,15 @@ void run_bfs_mt(graph_t& g, vid_t root)
     status_array[root] = 0;
 
     // create a thread for each vertex
-    omp_set_num_threads((int) array_size);
+    //omp_set_num_threads((int) array_size);
 
     // track the current level
     vid_t current_level = 0;
+    vid_t frontier = 0;
 	    
-    bool done = false;
-    while(done == false){
-	    #pragma omp parallel for
+    //bool done = false;
+    while(frontier < array_size-1){
+	    #pragma omp parallel for shared(frontier)
 	    for (int i = 0; i < array_size; i++){
 		if (status_array[i] == current_level){
 		    // node is in frontier, set level then find neighbors
@@ -163,12 +171,22 @@ void run_bfs_mt(graph_t& g, vid_t root)
 		    // loop through neighbors
 		    for (int j= start_idx; j < end_idx; j++) {
 			vid_t neb = nebrs[j];
+
+			
+		        #pragma omp critical
+			{
 			if (status_array[neb] > current_level + 1) {
 			    status_array[neb] = current_level + 1;
+			    // update something shared frontier variable
+			    frontier ++;
+			    //cout<<" frontier = "<< frontier<< endl;
+			}
 			}
 		    }
 		}
 	    }
+	    /* this is making things slow
+	    // need to find a shared variable implementation
 	    done = true;
 	    for (int i = 0; i< array_size; i++) {
 		    if (status_array[i] == 255){
@@ -176,7 +194,9 @@ void run_bfs_mt(graph_t& g, vid_t root)
 			    break;
 		    }
 	    }
+	    */
 	    current_level ++;
+	    //cout<<"new current level = "<<current_level<<endl;
     }
     // loop through and print status array
     //cout << "printing label array " << endl;
@@ -201,4 +221,7 @@ void run_bfs_mt(graph_t& g, vid_t root)
 	cout<< "level "<< i << ": "<< level_array[i]<< " vertices"<< endl;
     }
 
+    auto stop1 = high_resolution_clock::now();
+    auto duration1 = duration_cast<microseconds>(stop1-start1);
+    cout << "multi thread status array BFS takes " << duration1.count() << endl;
 }
